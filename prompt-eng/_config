@@ -1,0 +1,4 @@
+URL_GENERATE=http://host.docker.internal:11434/api/generate
+#URL_GENERATE=https://chat.hpc.fau.edu/api/chat/completions
+#API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmZTRmYjA4LTQ1NzItNGI0NC1iNTNmLTk5NDNkZWYwY2NmMyJ9.5E7j9QfsHolpENgDMyQH0QrtgBj2ZhA5jtI7Gl1r2hM
+
