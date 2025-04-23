@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: curiosity-bot
+    # Load your existing .env for DISCORD_TOKEN, SERVER_API_KEY, etc.
+    env_file:
+      - .env
+    # Override so model_req will POST to your host’s LLM on port 11434
+    environment:
+      URL_GENERATE: <Your_URL>
+      API_KEY:      <YOUR API_KEY>
+    volumes:
+      - .:/app:ro
+    restart: unless-stopped
