@@ -218,7 +218,7 @@ async def on_message(message):
     
     if text.lower().startswith("india"):
         try:
-            await message.channel.send(f"I love my country.\n India will stand strong.\n hand crafted with love by M\n")
+            await message.channel.send(f"I love my country.\n India will stand strong.\n hand crafted with love by M\n Link to my source:\n https://github.com/M-Maahir/CodingBot.git")
         except StopIteration:
             await message.channel.send(" No results found for your query.")
         return
