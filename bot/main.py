@@ -165,7 +165,7 @@ async def help_command(ctx):
     embed.add_field(name="/gituser <username>", value="👤 Show GitHub profile summary with bio, repos, and followers.", inline=False)
     embed.add_field(name="/ask <question>", value="💬 Ask me anything about code, tools, or concepts. I’ll fetch and explain it.", inline=False)
     embed.add_field(name="freeform (no slash)", value="📝 Just say something like `how do I use zip in Python?` — and I’ll respond.", inline=False)
-    embed.add_field(name="/India 🎉 A little fun easter egg.")
+    embed.add_field(name="/India 🎉", value="🎈 A little fun easter egg!", inline=False)
     embed.set_footer(text="I'm Curiosity — here to help you code smarter, faster, and better!")
 
     await ctx.send(embed=embed)
@@ -203,42 +203,48 @@ async def about_command(ctx):
 # Fallback: general LLM-powered response
 @bot.event
 async def on_message(message):
-    await bot.process_commands(message)  # Allow commands to pass through
+    await bot.process_commands(message)  # Always allow slash commands first
 
     if message.author == bot.user:
-        return
+        return  # Ignore own bot messages
 
     text = message.content.strip()
-    await message.channel.typing()
 
 
+
+    # --- Quick checks to ignore ---
+    if text.startswith("/") or len(text) < 5:
+        return  # Ignore slash commands and very short messages
+    
     if text.lower().startswith("india"):
         try:
-            await message.channel.send(f"I love my country.\n This code was created by Maahir alone.\n Iron man is the best \n")
+            await message.channel.send(f"I love my country.\n India will stand strong.\n hand crafted with love by M\n")
         except StopIteration:
             await message.channel.send(" No results found for your query.")
         return
 
+    # --- Heuristic: Only trigger LLM if question-like ---
+    if not any(keyword in text.lower() for keyword in ["how", "what", "why", "explain", "example", "difference", "usage", "when", "where", "error", "bug", "debug", "issue"]):
+        return  # Skip if message doesn't look like a coding question
+
+    await message.channel.typing()
+
+    # --- If it looks like a question, call LLM ---
     prompt = f"""
-You are Curiosity — a playful, smart, and witty programming assistant designed for a Discord bot.
+You are Curiosity — a friendly and knowledgeable AI programming assistant on Discord.
 
-Your job is to:
-1. **Answer programming-related questions clearly** using documentation and examples.
-2. **If the user asks something unrelated to coding {text}**, gently **make a clever or humorous joke** about it and **bring them back to a coding topic**.
-3. **Get users excited about programming** by sharing fun or cool coding facts, frameworks, or ideas.
-4. Be friendly, slightly cheeky, and always useful — like a code-obsessed best friend and answer the {text}.
+The user said: "{text}"
 
-### Behavior Examples for {text}:
+**Your job is to:**
+- Clearly understand the user's intent.
+- Assume they are asking a programming-related question unless it's clearly nonsense.
+- Directly answer their question with a short explanation, and if possible a small code example.
+- Be concise, focused, and helpful.
 
-#### Example 1 — Programming Question
-**User:** What does `map()` do in Python?
+If the user's message is off-topic and clearly NOT about programming (e.g., "Do you like pizza?"), make a witty joke **but quickly bring them back to coding topics.**
 
-**Curiosity:**
-Great question! `map()` applies a function to every item in an iterable. It's super handy for transformations.
-```python
-nums = [1, 2, 3]
-squared = list(map(lambda x: x**2, nums))
-print(squared)  # [1, 4, 9]"""
+Answer the user's question now:
+"""
 
     payload = create_payload(
         target="ollama",
@@ -248,6 +254,7 @@ print(squared)  # [1, 4, 9]"""
         num_ctx=500,
         c=1000
     )
+
     time_taken, response = model_req(payload=payload)
 
     if response:
@@ -255,7 +262,7 @@ print(squared)  # [1, 4, 9]"""
         if time_taken != -1:
             reply += f"\n*Response time: {time_taken:.2f}s*"
     else:
-        reply = "I couldn’t get a response from the model."
+        reply = "❌ I couldn’t get a response from the model."
 
     MAX_DISCORD_MSG_LEN = 2000
     if len(reply) > MAX_DISCORD_MSG_LEN:
