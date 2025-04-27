@@ -29,7 +29,8 @@ async def on_ready():
             await channel.send(
                 "👋 Hello! I'm **Curiosity**, your documentation assistant.\n\n"
                 "Use \n`/search <lang> <query>` for docs, \n`/gitsearch <query>` for GitHub repos, " \
-                "\n`/ask <question>`! for coding questions \n`/about`for about or \n`/help` for Help \nto get started"
+                "\n`/ask <question>`! for coding questions \n`/about`for about or \n`/help` for Help \n,to get started" \
+                "\n\nCreated By: Team **Interstellar**-\nMaahir\nManikanth\nRakesh"
             )
 
 # /search command for official docs
@@ -218,7 +219,7 @@ async def on_message(message):
     
     if text.lower().startswith("india"):
         try:
-            await message.channel.send(f"I love my country.\n India will stand strong.\n hand crafted with love by M\n Link to my source:\n https://github.com/M-Maahir/CodingBot.git")
+            await message.channel.send(f"I love my country.\n India will stand strong.\n hand crafted with love by Maahir\n Link to my source:\n https://github.com/M-Maahir/CodingBot.git")
         except StopIteration:
             await message.channel.send(" No results found for your query.")
         return
